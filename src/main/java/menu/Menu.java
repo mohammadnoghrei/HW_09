@@ -1,7 +1,7 @@
 package menu;
 
-import model.Category;
-import service.CategoryService;
+import model.*;
+import service.*;
 import utility.ApplicationContext;
 
 import java.sql.SQLException;
@@ -9,8 +9,13 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Menu {
-    public final Scanner scanner=new Scanner(System.in);
-     CategoryService categoryService = ApplicationContext.getCategoryService();
+    public final Scanner scanner = new Scanner(System.in);
+
+    AdminService adminService = ApplicationContext.getAdminService();
+    UserService userService = ApplicationContext.getUserService();
+    ProductService productService = ApplicationContext.getProductService();
+    CategoryService categoryService = ApplicationContext.getCategoryService();
+    CartService cartService = ApplicationContext.getCartService();
 
     public int getIntFromUser() {
         int num = 0;
@@ -46,6 +51,75 @@ public class Menu {
         }
     }
 
+    public void saveUser() {
+        System.out.println("enter username");
+        String username = getStringFromUser();
+        System.out.println("enter password");
+        String password = getStringFromUser();
+        User user = new User(username,password);
+        try {
+            userService.save(user);
+            System.out.println("*** user saved ***");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+    public void saveAdmin() {
+        System.out.println("enter username");
+        String username = getStringFromUser();
+        System.out.println("enter password");
+        String password = getStringFromUser();
+        Admin admin= new Admin(username,password);
+        try {
+            adminService.save(admin);
+            System.out.println("*** admin saved ***");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+    public void saveProduct() {
+        System.out.println("enter product name");
+        String name = getStringFromUser();
+        System.out.println("enter category id");
+        int categoryId = getIntFromUser();
+        System.out.println("enter count of product");
+        int count = getIntFromUser();
+        System.out.println("enter product price");
+        int price =getIntFromUser();
+        Product product = new Product(name,categoryId,count,price);
+        try {
+            productService.save(product);
+            System.out.println("*** product saved ***");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    public void saveCart() {
+        System.out.println("enter product_id");
+        int idProduct = getIntFromUser();
+        System.out.println("enter count of product");
+        int count = getIntFromUser();
+        int productPrice = 0;
+        try {
+            productPrice = productService.findById(idProduct).getProductPrice();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            ;
+        }
+        int totalPrice = count * productPrice;
+        Cart cart = new Cart(idProduct, count, totalPrice);
+        try {
+            cartService.save(cart);
+            System.out.println("*** cart saved ***");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public Category findByIdCategory() {
         System.out.println("please enter category id");
         int id = getIntFromUser();
@@ -56,6 +130,28 @@ public class Menu {
         }
         return null;
     }
+    public Product findByIdProduct() {
+        System.out.println("please enter product id");
+        int id = getIntFromUser();
+        try {
+            return productService.findById(id);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public Cart findByIdCart() {
+        System.out.println("please enter cart id");
+        int id = getIntFromUser();
+        try {
+            return cartService.findById(id);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
     public Category findByNameCategory() {
         System.out.println("please enter category name");
         String name = getStringFromUser();
@@ -66,8 +162,9 @@ public class Menu {
         }
         return null;
     }
+
     public void updateCategory() {
-         Category category = findByIdCategory();
+        Category category = findByIdCategory();
         if (category != null) {
             System.out.println("enter new category name");
             String name = getStringFromUser();
@@ -80,6 +177,59 @@ public class Menu {
             }
         } else System.out.println("this id not exist");
     }
+
+    public void updateProduct() {
+        Product product = findByIdProduct();
+        if (product != null) {
+            System.out.println("enter new product name");
+            String name = getStringFromUser();
+            product.setProductName(name);
+            System.out.println("enter new product category id");
+            int categoryId = getIntFromUser();
+            product.setCategoryIdFk(categoryId);
+            System.out.println("enter new product count");
+            int count = getIntFromUser();
+            product.setProductCount(count);
+            System.out.println("enter new product price");
+            int price = getIntFromUser();
+            product.setProductPrice(price);
+            try {
+                productService.update(product);
+                System.out.println("product updated");
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        } else System.out.println("this id not exist");
+    }
+
+    public void updateCart() {
+        Cart cart = findByIdCart();
+        if (cart != null) {
+            System.out.println("enter new product id");
+            int productId = getIntFromUser();
+            cart.setProductIdFk(productId);
+            System.out.println("enter new count");
+            int count = getIntFromUser();
+            cart.setCount(count);
+            int productPrice = 0;
+            try {
+                productPrice = productService.findById(productId).getProductPrice();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                ;
+            }
+            int totalPrice = count * productPrice;
+            cart.setTotalPrice(totalPrice);
+
+            try {
+                cartService.update(cart);
+                System.out.println("cart updated");
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        } else System.out.println("this id not exist");
+    }
+
     public void deleteCategory() {
         System.out.println("please enter id for delete Category");
         int id = getIntFromUser();
@@ -90,7 +240,35 @@ public class Menu {
             System.out.println(e.getMessage());
         }
         if (Delete) {
-            System.out.println("player deleted");
+            System.out.println("category deleted");
+        } else System.out.println("something is wrong");
+
+    }
+    public void deleteProduct() {
+        System.out.println("please enter id for delete Product");
+        int id = getIntFromUser();
+        boolean Delete = false;
+        try {
+            Delete = productService.delete(id);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        if (Delete) {
+            System.out.println("product deleted");
+        } else System.out.println("something is wrong");
+
+    }
+    public void deleteCart() {
+        System.out.println("please enter id for delete Cart");
+        int id = getIntFromUser();
+        boolean Delete = false;
+        try {
+            Delete = cartService.delete(id);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        if (Delete) {
+            System.out.println("cart deleted");
         } else System.out.println("something is wrong");
 
     }
