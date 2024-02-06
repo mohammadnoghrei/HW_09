@@ -34,7 +34,7 @@ public class CategoryRepositoryImpel extends BaseRepositoryImpel<Integer, Catego
     public Category mapResultSet(ResultSet resultSet) throws SQLException {
         Category category = new Category();
         category.setId(resultSet.getInt("category_id"));
-        category.setCategoryName(resultSet.getString(" category_name "));
+        category.setCategoryName(resultSet.getString("category_name"));
         return (Category) category;
     }
 
