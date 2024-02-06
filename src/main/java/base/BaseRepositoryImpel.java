@@ -26,7 +26,7 @@ public abstract class BaseRepositoryImpel<ID extends Serializable, TYPE extends 
     }
     @Override
     public TYPE findBYId(ID id) throws SQLException {
-        String sql="select * from "+getTableName()+" where "+getColumnId()+" = ?";
+        String sql="select * from " + getTableName() + " where "+ getColumnId() +" = ?";
         try(PreparedStatement preparedStatement= connection.prepareStatement(sql)) {
             preparedStatement.setInt(1,(Integer) id);
             ResultSet resultSet= preparedStatement.executeQuery();
