@@ -1,6 +1,7 @@
 package repository;
 
 import base.BaseRepositoryImpel;
+import connection.JdbcConnection;
 import model.Cart;
 import model.Category;
 
@@ -59,5 +60,44 @@ public class CartRepositoryImpel extends BaseRepositoryImpel<Integer, Cart> impl
     @Override
     public String getCulumnsname() {
         return "( product_id_fk,count,total_price )";
+    }
+
+    @Override
+    public void cartList() throws SQLException {
+        Connection connection = JdbcConnection.getConnection();
+        String sql="select * from cart order by cart_id ";
+            PreparedStatement preparedStatement=connection.prepareStatement(sql);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()){
+                int id = resultSet.getInt(1);
+                int productId = resultSet.getInt(2);
+                int count= resultSet.getInt(3);
+                int totalPrice =resultSet.getInt(4);
+                System.out.println("cart "+id+"->  product Id"+productId+"  count:"+count+"  total price:"+totalPrice);
+            }
+    }
+
+
+    @Override
+    public int cartPriceSum() throws SQLException {
+        Connection connection = JdbcConnection.getConnection();
+        String sql="select sum(total_price)from cart";
+        PreparedStatement preparedStatement=connection.prepareStatement(sql);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
+        int total =resultSet.getInt(1);
+        return total;
+    }
+
+    @Override
+    public void deleteAll() throws SQLException {
+        Connection connection = JdbcConnection.getConnection();
+        String sql = "DELETE FROM " + getTableName() + " WHERE  cart_id > ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, 0);
+            preparedStatement.executeUpdate();
+
+        }
     }
 }
