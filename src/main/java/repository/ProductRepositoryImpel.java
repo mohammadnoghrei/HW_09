@@ -1,6 +1,7 @@
 package repository;
 
 import base.BaseRepositoryImpel;
+import connection.JdbcConnection;
 import model.Category;
 import model.Product;
 
@@ -13,6 +14,18 @@ public class ProductRepositoryImpel extends BaseRepositoryImpel<Integer, Product
     public ProductRepositoryImpel(Connection connection) {
         super(connection);
     }
+
+
+    @Override
+    public int updateProductCount(int id,int count ) throws SQLException {
+        Connection connection = JdbcConnection.getConnection();
+        String edit = "UPDATE product set product_count=? WHERE product_id= ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(edit);
+        preparedStatement.setInt(1,count);
+        preparedStatement.setInt(2,id);
+        return preparedStatement.executeUpdate();
+    }
+
 
     @Override
     public String getTableName() {
@@ -62,4 +75,6 @@ public class ProductRepositoryImpel extends BaseRepositoryImpel<Integer, Product
     public String getCulumnsname() {
         return "( product_name, category_id_fk, product_count, product_price )";
     }
+
+
 }
