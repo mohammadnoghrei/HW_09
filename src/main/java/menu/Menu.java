@@ -103,22 +103,27 @@ public class Menu {
         int idProduct = getIntFromUser();
         System.out.println("enter count of product");
         int count = getIntFromUser();
-        int productPrice = 0;
-        try {
-            productPrice = productService.findById(idProduct).getProductPrice();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            ;
-        }
-        int totalPrice = count * productPrice;
-        Cart cart = new Cart(idProduct, count, totalPrice);
-        try {
-            cartService.save(cart);
-            System.out.println("*** cart saved ***");
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
+        if (findProductCount(idProduct,count)==false) {
+            System.out.println(" kheyliiiii ziyade nadarim");}
+        else {
+
+            int productPrice = 0;
+            try {
+                productPrice = productService.findById(idProduct).getProductPrice();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+                ;
+            }
+
+            int totalPrice = count * productPrice;
+            Cart cart = new Cart(idProduct, count, totalPrice);
+            try {
+                cartService.save(cart);
+                System.out.println("*** cart saved ***");
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }}
 
     public Category findByIdCategory() {
         System.out.println("please enter category id");
@@ -262,6 +267,7 @@ public class Menu {
         System.out.println("please enter id for delete Cart");
         int id = getIntFromUser();
         boolean Delete = false;
+        addProductCount(id);
         try {
             Delete = cartService.delete(id);
         } catch (SQLException e) {
@@ -272,5 +278,51 @@ public class Menu {
         } else System.out.println("something is wrong");
 
     }
+
+    public void productCountCheck() throws SQLException {
+        productService.updateProductCount(1,20);
+    }
+    public boolean findProductCount(int id ,int count){
+        Product product =null;
+        try {
+             product =productService.findById(id);
+        } catch (SQLException e) {
+            e.getMessage();
+
+        }
+        if (product.getProductCount()>= count) {
+            try {
+                productService.updateProductCount(id, product.getProductCount()-count);
+            } catch (SQLException e) {
+                e.getMessage();
+            }
+            return true;}
+
+        else return false;
+
+    }
+    public boolean addProductCount(int id ){////////////////////////////////////برای دیلیت باید اضاف کند
+        Cart cart =null;
+        try {
+            cart =cartService.findById(id);
+        } catch (SQLException e) {
+            e.getMessage();
+        }
+        Product product =null;
+        try {
+            product =productService.findById(cart.getProductIdFk());
+        } catch (SQLException e) {
+            e.getMessage();
+        }
+        try {
+                productService.updateProductCount(cart.getProductIdFk(),
+                        cart.getCount()+product.getProductCount());
+            } catch (SQLException e) {
+                e.getMessage();
+            }
+            return true;}
+
+
+
 
 }
