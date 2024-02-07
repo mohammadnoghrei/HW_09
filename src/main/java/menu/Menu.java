@@ -17,6 +17,123 @@ public class Menu {
     CategoryService categoryService = ApplicationContext.getCategoryService();
     CartService cartService = ApplicationContext.getCartService();
 
+
+    public void sum() {
+        cartService.deleteAll();
+    }
+
+    public void baseMenu(){
+        System.out.println("welcome to shop system");
+        System.out.println("1-admin sign in\n2-user sign in \n3-user sign up");
+        int num = scanner.nextInt();
+        scanner.nextLine();
+        switch (num){
+            case 1->{adminSignIn();}
+            case 2->{userSignIn();}
+            case 3->{saveUser();userMenu();}
+        }
+    }
+
+
+
+
+    public void userMenu() {
+        boolean end = true;
+        while (end) {
+            System.out.println("1-add\n2-delete\n3-end");
+            int num = scanner.nextInt();
+            scanner.nextLine();
+            switch (num) {
+                case 1 -> {
+                    saveCart();
+                    list();
+                    totalCartPrice();
+                    break;
+                }
+                case 2 -> {
+                    deleteCart();
+                    list();
+                    totalCartPrice();
+                    break;
+                }
+                case 3 -> {
+                    end = false;
+                }
+            }
+
+        }
+    }
+
+
+    public void adminMenu() {
+        System.out.println("1-add\n2-delete\n3-update");
+        int num = scanner.nextInt();
+        scanner.nextLine();
+        switch (num) {
+            case 1 -> {
+                addmenu();
+                break;
+            }
+            case 2 -> {
+                deletemenu();
+                break;
+            }
+            case 3 -> {
+                updatemenu();
+                break;
+            }
+        }
+    }
+
+    public void addmenu() {
+        System.out.println("1-add product\n2-add category");
+        int num = scanner.nextInt();
+        scanner.nextLine();
+        switch (num) {
+            case 1 -> {
+                saveProduct();
+                break;
+            }
+            case 2 -> {
+                saveCategory();
+                break;
+            }
+        }
+    }
+
+    public void deletemenu() {
+        System.out.println("1-delete product\n2-delete category");
+        int num = scanner.nextInt();
+        scanner.nextLine();
+        switch (num) {
+            case 1 -> {
+                deleteProduct();
+                break;
+            }
+            case 2 -> {
+                deleteCategory();
+                break;
+            }
+        }
+    }
+
+    public void updatemenu() {
+        System.out.println("1-update product\n2-update category");
+        int num = scanner.nextInt();
+        scanner.nextLine();
+        switch (num) {
+            case 1 -> {
+                updateProduct();
+                break;
+            }
+            case 2 -> {
+                updateCategory();
+                break;
+            }
+        }
+    }
+
+
     public int getIntFromUser() {
         int num = 0;
         try {
@@ -56,7 +173,7 @@ public class Menu {
         String username = getStringFromUser();
         System.out.println("enter password");
         String password = getStringFromUser();
-        User user = new User(username,password);
+        User user = new User(username, password);
         try {
             userService.save(user);
             System.out.println("*** user saved ***");
@@ -65,12 +182,13 @@ public class Menu {
         }
 
     }
+
     public void saveAdmin() {
         System.out.println("enter username");
         String username = getStringFromUser();
         System.out.println("enter password");
         String password = getStringFromUser();
-        Admin admin= new Admin(username,password);
+        Admin admin = new Admin(username, password);
         try {
             adminService.save(admin);
             System.out.println("*** admin saved ***");
@@ -79,6 +197,7 @@ public class Menu {
         }
 
     }
+
     public void saveProduct() {
         System.out.println("enter product name");
         String name = getStringFromUser();
@@ -87,8 +206,8 @@ public class Menu {
         System.out.println("enter count of product");
         int count = getIntFromUser();
         System.out.println("enter product price");
-        int price =getIntFromUser();
-        Product product = new Product(name,categoryId,count,price);
+        int price = getIntFromUser();
+        Product product = new Product(name, categoryId, count, price);
         try {
             productService.save(product);
             System.out.println("*** product saved ***");
@@ -103,9 +222,9 @@ public class Menu {
         int idProduct = getIntFromUser();
         System.out.println("enter count of product");
         int count = getIntFromUser();
-        if (findProductCount(idProduct,count)==false) {
-            System.out.println(" kheyliiiii ziyade nadarim");}
-        else {
+        if (findProductCount(idProduct, count) == false) {
+            System.out.println(" kheyliiiii ziyade nadarim");
+        } else {
 
             int productPrice = 0;
             try {
@@ -123,7 +242,8 @@ public class Menu {
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
-        }}
+        }
+    }
 
     public Category findByIdCategory() {
         System.out.println("please enter category id");
@@ -135,6 +255,7 @@ public class Menu {
         }
         return null;
     }
+
     public Product findByIdProduct() {
         System.out.println("please enter product id");
         int id = getIntFromUser();
@@ -249,6 +370,7 @@ public class Menu {
         } else System.out.println("something is wrong");
 
     }
+
     public void deleteProduct() {
         System.out.println("please enter id for delete Product");
         int id = getIntFromUser();
@@ -263,6 +385,7 @@ public class Menu {
         } else System.out.println("something is wrong");
 
     }
+
     public void deleteCart() {
         System.out.println("please enter id for delete Cart");
         int id = getIntFromUser();
@@ -279,50 +402,127 @@ public class Menu {
 
     }
 
-    public void productCountCheck() throws SQLException {
-        productService.updateProductCount(1,20);
-    }
-    public boolean findProductCount(int id ,int count){
-        Product product =null;
+
+    public boolean findProductCount(int id, int count) {
+        Product product = null;
         try {
-             product =productService.findById(id);
+            product = productService.findById(id);
         } catch (SQLException e) {
-            e.getMessage();
+            System.out.println(e.getMessage());
 
         }
-        if (product.getProductCount()>= count) {
+        if (product.getProductCount() >= count) {
             try {
-                productService.updateProductCount(id, product.getProductCount()-count);
+                productService.updateProductCount(id, product.getProductCount() - count);
             } catch (SQLException e) {
-                e.getMessage();
+                System.out.println(e.getMessage());
             }
-            return true;}
-
-        else return false;
+            return true;
+        } else return false;
 
     }
-    public boolean addProductCount(int id ){////////////////////////////////////برای دیلیت باید اضاف کند
-        Cart cart =null;
+
+    public boolean addProductCount(int id) {
+        Cart cart = null;
         try {
-            cart =cartService.findById(id);
+            cart = cartService.findById(id);
         } catch (SQLException e) {
-            e.getMessage();
+            System.out.println(e.getMessage());
         }
-        Product product =null;
+        Product product = null;
         try {
-            product =productService.findById(cart.getProductIdFk());
+            product = productService.findById(cart.getProductIdFk());
         } catch (SQLException e) {
-            e.getMessage();
+            System.out.println(e.getMessage());
         }
         try {
-                productService.updateProductCount(cart.getProductIdFk(),
-                        cart.getCount()+product.getProductCount());
-            } catch (SQLException e) {
-                e.getMessage();
+            productService.updateProductCount(cart.getProductIdFk(),
+                    cart.getCount() + product.getProductCount());
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return true;
+    }
+
+    public boolean adminSignIn() {
+        boolean end = true;
+        System.out.println("Please enter admin username:");
+        String username = scanner.nextLine();
+        System.out.println("Please enter admin password");
+        String password = scanner.nextLine();
+        Admin admin = null;
+        try {
+            admin = adminService.find(username, password);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        if (admin == null) {
+            System.out.println(" user or pass is wrong!");
+            System.out.println("1_ exit\n2_ try again");
+            int num = scanner.nextInt();
+            scanner.nextLine();
+            switch (num) {
+                case 1 -> {
+                    end = false;
+                    break;
+                }
+                case 2 -> adminSignIn();
             }
-            return true;}
+        } else {
+            System.out.println("WELCOME " + admin.getUsername());
+            addmenu();
+            end = true;
+        }
+        return end;
+    }
 
+    public boolean userSignIn() {
+        boolean end = true;
+        System.out.println("Please enter user username:");
+        String username = scanner.nextLine();
+        System.out.println("Please enter user password");
+        String password = scanner.nextLine();
+        User user = null;
+        try {
+            user = userService.find(username, password);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        if (user == null) {
+            System.out.println(" user or pass is wrong!");
+            System.out.println("1_ exit\n2_ try again\n3_ register");
+            int num = scanner.nextInt();
+            scanner.nextLine();
+            switch (num) {
+                case 1 -> {
+                    end = false;
+                    break;
+                }
+                case 2 -> adminSignIn();
+                case 3 -> saveUser();
+            }
+        } else {
+            System.out.println("WELCOME " + user.getUsername());
+            userMenu();
+            end = true;
+        }
+        return end;
+    }
 
+    public void list() {
+        try {
+            cartService.cartList();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
+    public void totalCartPrice() {
+        try {
+            System.out.println("total cart price =" + cartService.cartPriceSum());
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
 }
