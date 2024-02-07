@@ -1,8 +1,10 @@
 package repository;
 
 import base.BaseRepositoryImpel;
+import connection.JdbcConnection;
 import model.Admin;
 import model.Cart;
+import model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -59,4 +61,25 @@ public class AdminRepositoryImpel extends BaseRepositoryImpel<Integer, Admin> im
     public String getCulumnsname() {
         return "( username, password )";
     }
+
+    @Override
+    public Admin find(String username, String password) throws SQLException {
+
+        Connection connection = JdbcConnection.getConnection();
+            String findUser = "SELECT * FROM Admin WHERE username = ? and password=?";
+            PreparedStatement preparedStatement = connection.prepareStatement(findUser);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2,password);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if(resultSet.next()) {
+                int id = resultSet.getInt("admin_id");
+                String fetchUsername = resultSet.getString("username");
+                String fetchpassword = resultSet.getString("password");
+                Admin admin = new Admin(id, fetchUsername, fetchpassword);
+                return admin;
+            }
+            else
+                return null;
+        }
+
 }
