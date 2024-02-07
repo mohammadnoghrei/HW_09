@@ -26,4 +26,3 @@ create table if not exists cart(
     count int,
     total_price int
 );
-select * from category where category_id =2
