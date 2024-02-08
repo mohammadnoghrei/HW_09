@@ -13,7 +13,7 @@ public class CartServiceImpel extends BaseServiceImpel <Integer, Cart, CartRepos
 
     @Override
     public void cartList() throws SQLException {
-
+repository.cartList();
     }
 
     @Override
@@ -22,7 +22,7 @@ public class CartServiceImpel extends BaseServiceImpel <Integer, Cart, CartRepos
     }
 
     @Override
-    public void deleteAll() {
-
+    public void deleteAll() throws SQLException {
+repository.deleteAll();
     }
 }
