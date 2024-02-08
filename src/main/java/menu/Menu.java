@@ -1,9 +1,13 @@
 package menu;
 
+import connection.JdbcConnection;
 import model.*;
 import service.*;
 import utility.ApplicationContext;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -18,8 +22,19 @@ public class Menu {
     CartService cartService = ApplicationContext.getCartService();
 
 
-    public void sum() {
-        cartService.deleteAll();
+    public void deleteAll() {
+        try {
+            cartService.deleteAll();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    public void listCart(){
+        try {
+            cartService.cartList();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void baseMenu(){
@@ -45,6 +60,7 @@ public class Menu {
             scanner.nextLine();
             switch (num) {
                 case 1 -> {
+                    productList();
                     saveCart();
                     list();
                     totalCartPrice();
@@ -57,6 +73,7 @@ public class Menu {
                     break;
                 }
                 case 3 -> {
+                    deleteAll();
                     end = false;
                 }
             }
@@ -498,7 +515,7 @@ public class Menu {
                     end = false;
                     break;
                 }
-                case 2 -> adminSignIn();
+                case 2 -> userSignIn();
                 case 3 -> saveUser();
             }
         } else {
@@ -520,6 +537,14 @@ public class Menu {
     public void totalCartPrice() {
         try {
             System.out.println("total cart price =" + cartService.cartPriceSum());
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void productList(){
+        try {
+            productService.productList();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
