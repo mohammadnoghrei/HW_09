@@ -18,4 +18,7 @@ public class ProductServiceImpel extends BaseServiceImpel<Integer, Product, Prod
     public int updateProductCount(int id, int count) throws SQLException {
         return repository.updateProductCount(id,count);
     }
+    public void productList() throws SQLException{
+        repository.productList();
+    };
 }

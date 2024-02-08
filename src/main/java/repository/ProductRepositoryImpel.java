@@ -17,6 +17,22 @@ public class ProductRepositoryImpel extends BaseRepositoryImpel<Integer, Product
 
 
     @Override
+    public void productList() throws SQLException {
+        Connection connection = JdbcConnection.getConnection();
+        String sql="select * from product order by product_id ";
+        PreparedStatement preparedStatement=connection.prepareStatement(sql);
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        while (resultSet.next()){
+            int id = resultSet.getInt(1);
+            String productName = resultSet.getString(2);
+            int categoryId= resultSet.getInt(3);
+            int count= resultSet.getInt(4);
+            int Price =resultSet.getInt(5);
+            System.out.println("product "+id+"->  product name ="+productName+" category id= "+categoryId+  "count= "+count+" + total price= "+Price);
+        }
+    }
+    @Override
     public int updateProductCount(int id,int count ) throws SQLException {
         Connection connection = JdbcConnection.getConnection();
         String edit = "UPDATE product set product_count=? WHERE product_id= ?";
