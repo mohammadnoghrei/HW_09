@@ -55,7 +55,7 @@ public class Menu {
     public void userMenu() {
         boolean end = true;
         while (end) {
-            System.out.println("1-add\n2-delete\n3-end");
+            System.out.println("1-add\n2-delete\n0-end");
             int num = scanner.nextInt();
             scanner.nextLine();
             switch (num) {
@@ -72,7 +72,7 @@ public class Menu {
                     totalCartPrice();
                     break;
                 }
-                case 3 -> {
+                case 0 -> {
                     deleteAll();
                     end = false;
                 }
@@ -83,7 +83,9 @@ public class Menu {
 
 
     public void adminMenu() {
-        System.out.println("1-add\n2-delete\n3-update");
+        boolean end=true;
+        while (end){
+        System.out.println("1-add\n2-delete\n3-update\n0-exit");
         int num = scanner.nextInt();
         scanner.nextLine();
         switch (num) {
@@ -99,54 +101,67 @@ public class Menu {
                 updatemenu();
                 break;
             }
+            case 0->{
+                end=false;
+            }
         }
+    }
     }
 
     public void addmenu() {
-        System.out.println("1-add product\n2-add category");
+        System.out.println("1-add product\n2-add category\n0-admin menu");
         int num = scanner.nextInt();
         scanner.nextLine();
         switch (num) {
             case 1 -> {
                 saveProduct();
+
                 break;
             }
             case 2 -> {
                 saveCategory();
+
                 break;
             }
+            case 0->{break;}
         }
     }
 
     public void deletemenu() {
-        System.out.println("1-delete product\n2-delete category");
+        System.out.println("1-delete product\n2-delete category\n0-admin menu");
         int num = scanner.nextInt();
         scanner.nextLine();
         switch (num) {
             case 1 -> {
                 deleteProduct();
+
                 break;
             }
             case 2 -> {
                 deleteCategory();
+
                 break;
             }
+            case 0->{break;}
         }
     }
 
     public void updatemenu() {
-        System.out.println("1-update product\n2-update category");
+        System.out.println("1-update product\n2-update category\n0-admin menu");
         int num = scanner.nextInt();
         scanner.nextLine();
         switch (num) {
             case 1 -> {
                 updateProduct();
+                adminMenu();
                 break;
             }
             case 2 -> {
                 updateCategory();
+                adminMenu();
                 break;
             }
+            case 0->{break;}
         }
     }
 
@@ -487,7 +502,7 @@ public class Menu {
             }
         } else {
             System.out.println("WELCOME " + admin.getUsername());
-            addmenu();
+            adminMenu();
             end = true;
         }
         return end;
